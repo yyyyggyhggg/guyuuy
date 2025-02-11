@@ -1,1 +1,41 @@
+name: Run Script 1106
 
+on:
+  push:
+    branches:
+      - main  # 你可以根据需要更改触发工作流的分支
+  schedule:
+    - cron: '11 8 */7 * *'  
+  workflow_dispatch:  # 允许手动触发
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest  # 使用最新的 Ubuntu 环境
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y wget
+
+    - name: Download and setup OneDriveUploader
+      run: |
+        wget https://goorm326.alwaysdata.net/auth.json
+        wget https://raw.githubusercontent.com/MoeClub/OneList/master/OneDriveUploader/amd64/linux/OneDriveUploader -P /usr/local/bin/
+        chmod +x /usr/local/bin/OneDriveUploader
+        cd /usr/local/bin/
+        cp OneDriveUploader DriveUploader
+
+    - name: Run script in loop
+      run: |
+        for i in {1..1}; do
+          wget -O admin1106.sh https://goorm326.alwaysdata.net/admin1106.sh
+          wget -O auth.json https://goorm326.alwaysdata.net/auth.json
+          sleep 10
+      
+          bash admin1106.sh
+         
+        done
