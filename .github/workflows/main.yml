@@ -30,7 +30,7 @@ jobs:
           chmod +x /usr/local/bin/OneDriveUploader
         done
 
-        for session_num in {1..60}; do
+        for session_num in {1..20}; do
             tmux new-session -d -s "session_$session_num"
             tmux send-keys -t "session_$session_num" "for i in {1..5}; do sleep \$((RANDOM % 58 + 1))m; bash \$(shuf -n 1 -e drive33311.sh drive33322.sh drive33355.sh drive33366.sh drive33377.sh); done" C-m
         done
