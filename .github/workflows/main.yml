@@ -2,7 +2,7 @@ name: Run tmux 7
 
 on:
   schedule:
-    - cron: '42 19 * * *'  # 每 4 小时运行一次
+    - cron: '42 19 */2 * *'  # 每 4 小时运行一次
   workflow_dispatch:  # 允许手动触发
 
 jobs:
